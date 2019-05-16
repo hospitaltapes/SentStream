@@ -3,7 +3,7 @@
 """
 Created on Thu May 16 00:08:21 2019
 Tweet streaming
-@author: dextertortoriello
+@author: hospitaltapes
 """
 
 import tweepy
@@ -15,11 +15,11 @@ import re
 import json
 import sqlite3
 
-#consumer key, consumer secret, access token, access secret.
-ckey="F6J5d413R20nLQ0lDalOxpaO4"
-csecret="6XvhttWFw00Ut9eS9GsvA8bzEZ1RmIlEU5ao7CfRrIcVrnzDDK"
-atoken="139144634-FlWPlvEtzNArZQF7IGR6pLnFlRpScFJdRH1m0Lz5"
-asecret="JDWdCfUapwOe6PcT985dk0HNfY5XNjXEdMZINwTSP840S"
+#ADD YOUR API KEYS FROM TWITTER DEV - consumer key, consumer secret, access token, access secret.
+ckey=""
+csecret=""
+atoken=""
+asecret=""
 
 # handles OAuth twitter authorization
 auth = OAuthHandler(ckey, csecret)
