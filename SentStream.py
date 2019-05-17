@@ -14,8 +14,11 @@ from textblob import TextBlob
 import re
 import json
 import sqlite3
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
-#consumer key, consumer secret, access token, access secret.
+
+# VALUES FOUND IN TWITTER DEV ACCOUNT: 
+# consumer key, consumer secret, access token, access secret.
 ckey=""
 csecret=""
 atoken=""
@@ -51,27 +54,23 @@ c = conn.cursor()
 class Tweet():
 
     def clean_tweet(self, tweet): 
-    		''' 
-    		Utility function to clean tweet text by removing links, 
+            ''' 
+            Utility function to clean tweet text by removing links, 
             special characters using simple regex statements. 
-    		'''
-    		return ' '.join(re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)", " ", tweet).split())
+            '''
+            return ' '.join(re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)", " ", tweet).split())
         
     # Data on the tweet
     def tweet_sentiment(self, tweet): 
-    	''' 
-    	Utility function to classify sentiment of passed tweet 
-    	using textblob's sentiment method 
-    	'''
-    	# create TextBlob object of passed tweet text 
-    	analysis = TextBlob(self.clean_tweet(tweet)) 
-    	# set sentiment 
-    	if analysis.sentiment.polarity > 0: 
-    		return 'Positive' 
-    	elif analysis.sentiment.polarity == 0: 
-    		return 'Neutral'
-    	else: 
-    		return 'Negative'
+        ''' 
+        Utility function to classify sentiment of passed tweet 
+        using textblob's sentiment method 
+        '''
+        analyser = SentimentIntensityAnalyzer()
+        score = analyser.polarity_scores(self.clean_tweet(tweet))
+        sentscore = analyser.polarity_scores(tweet) 
+        return sentscore['compound']
+            
     
     def __init__(self, text, user, followers, date, sentiment):
         self.text = text
@@ -79,7 +78,7 @@ class Tweet():
         self.followers = followers
         self.date = date
         self.sentiment = self.tweet_sentiment(self.text)
-
+    
         
         
 
@@ -94,27 +93,27 @@ class Tweet():
 class MyStreamListener(tweepy.StreamListener):
     
     def clean_tweet(self, tweet): 
-    		''' 
-    		Utility function to clean tweet text by removing links, 
+            ''' 
+            Utility function to clean tweet text by removing links, 
             special characters using simple regex statements. 
-    		'''
-    		return ' '.join(re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)", " ", tweet).split()) 
-    								 
+            '''
+            return ' '.join(re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)", " ", tweet).split()) 
+                                     
     
     def get_tweet_sentiment(self, tweet): 
-    	''' 
-    	Utility function to classify sentiment of passed tweet 
-    	using textblob's sentiment method 
-    	'''
-    	# create TextBlob object of passed tweet text 
-    	analysis = TextBlob(self.clean_tweet(tweet)) 
-    	# set sentiment 
-    	if analysis.sentiment.polarity > 0: 
-    		return '\033[1;35;48m Positive' # weird numbers are for color coding
-    	elif analysis.sentiment.polarity == 0: 
-    		return '\033[1;36;48m Neutral'
-    	else: 
-    		return '\033[1;30;41m Negative'
+        ''' 
+        Utility function to classify sentiment of passed tweet 
+        using textblob's sentiment method 
+        '''
+        # create TextBlob object of passed tweet text 
+        analysis = TextBlob(self.clean_tweet(tweet)) 
+        # set sentiment 
+        if analysis.sentiment.polarity > 0: 
+            return '\033[1;35;48m Positive' # weird numbers are for color coding
+        elif analysis.sentiment.polarity == 0: 
+            return '\033[1;36;48m Neutral' 
+        else: 
+            return '\033[1;30;41m Negative'
 
     # creates listener that prints each tweet
     def on_data(self, data):
@@ -160,7 +159,7 @@ class MyStreamListener(tweepy.StreamListener):
         
 
         
-	
+    
         
 myStreamListener = MyStreamListener()
 myStream = tweepy.Stream(auth = api.auth, listener=myStreamListener)
