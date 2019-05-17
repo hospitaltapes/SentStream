@@ -23,7 +23,6 @@ ckey=""
 csecret=""
 atoken=""
 asecret=""
-
 # handles OAuth twitter authorization
 auth = OAuthHandler(ckey, csecret)
 auth.set_access_token(atoken, asecret)
@@ -106,11 +105,12 @@ class MyStreamListener(tweepy.StreamListener):
         using textblob's sentiment method 
         '''
         # create TextBlob object of passed tweet text 
-        analysis = TextBlob(self.clean_tweet(tweet)) 
+        analyser = SentimentIntensityAnalyzer()
+        score = analyser.polarity_scores(self.clean_tweet(tweet))
         # set sentiment 
-        if analysis.sentiment.polarity > 0: 
+        if score['compound'] > 0.05: 
             return '\033[1;35;48m Positive' # weird numbers are for color coding
-        elif analysis.sentiment.polarity == 0: 
+        elif score['compound'] >= -.05 and score['compound'] >= -.05:
             return '\033[1;36;48m Neutral' 
         else: 
             return '\033[1;30;41m Negative'
