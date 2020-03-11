@@ -1,11 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Thu May 16 00:08:21 2019
-Tweet streaming
-@author: hospitaltapes
-"""
-
 import tweepy
 from tweepy import Stream
 from tweepy import OAuthHandler
@@ -32,7 +24,7 @@ print("What would you like to name your database?")
 database = input()
 
 '''
-Creates an SQLite databse called twitter.db with 
+Creates an SQLite databse with the inputted name
 '''
 conn = sqlite3.connect(database + ".db")
 c = conn.cursor()
@@ -113,7 +105,7 @@ class MyStreamListener(tweepy.StreamListener):
         elif score['compound'] >= -.05 and score['compound'] >= -.05:
             return '\033[1;36;48m Neutral' 
         else: 
-            return '\033[1;30;41m Negative'
+            return '\033[1;30;48m Negative'
 
     # creates listener that prints each tweet
     def on_data(self, data):
@@ -144,12 +136,11 @@ class MyStreamListener(tweepy.StreamListener):
                 
                 sent = self.get_tweet_sentiment(tweet_data.text)
                 print("\033[0;30;48m This tweet is:" + sent)
-                print() #line break
                 print(tweet_data.text)
                 print()#line break
                 print()#line break
 
-        # Let me know if something bad happens
+        # Error handler
         except Exception as e:
             print(e)
             pass
