@@ -1,5 +1,5 @@
 # SentStream
-Streams incoming tweets off twitter to an SQL database with sentiment analysis, follower counts, and more. Also prints the output into your console. 
+Streams incoming tweets off twitter to a SQL database with sentiment analysis, follower counts, and more. Also prints the output into your console. 
 
 # How to run:
 Before running, add your Twitter Dev keys into the designated slots in the sentstream.py file. Save.
